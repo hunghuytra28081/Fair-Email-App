@@ -590,14 +590,14 @@ public class IMAPMessage extends MimeMessage implements ReadableMime {
 							"plain".equalsIgnoreCase(bs.subtype)) ||
 							!(bs.type.equalsIgnoreCase(ct.getPrimaryType()) &&
 									bs.subtype.equalsIgnoreCase(ct.getSubType()))) {
-						eu.faircode.email.Log.i("Inconsistent" +
-								" bs=" + bs.type + "/" + bs.subtype + "/" + bs.cParams + " header=" + ct);
+//						eu.faircode.email.Log.i("Inconsistent" +
+//								" bs=" + bs.type + "/" + bs.subtype + "/" + bs.cParams + " header=" + ct);
 						type = ct.toString();
 						return type;
 					}
 				}
 			} catch (MessagingException ex) {
-				eu.faircode.email.Log.e(ex);
+//				eu.faircode.email.Log.e(ex);
 			}
 
 	    // generate content-type from BODYSTRUCTURE
@@ -1772,7 +1772,7 @@ public class IMAPMessage extends MimeMessage implements ReadableMime {
                 envelope.inReplyTo == null &&
                 envelope.messageId == null &&
                 headersLoaded && (loadedHeaders == null || loadedHeaders.size() == 0)) {
-			eu.faircode.email.Log.w("Expunged workaround host=" + ((IMAPStore) folder.getStore()).host);
+//			eu.faircode.email.Log.w("Expunged workaround host=" + ((IMAPStore) folder.getStore()).host);
 			return true;
 		}
 

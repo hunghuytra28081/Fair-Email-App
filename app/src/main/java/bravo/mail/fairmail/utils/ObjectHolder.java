@@ -1,4 +1,4 @@
-package bravo.mail.fairmail.utils.tuple;
+package bravo.mail.fairmail.utils;
 
 /*
     This file is part of FairEmail.
@@ -19,7 +19,13 @@ package bravo.mail.fairmail.utils.tuple;
     Copyright 2018-2022 by Marcel Bokhorst (M66B)
 */
 
-public class TupleOperationStats {
-    public Integer pending;
-    public Integer errors;
+public class ObjectHolder<T> {
+    public T value;
+
+    public ObjectHolder() {
+    }
+
+    public ObjectHolder(T init) {
+        this.value = init;
+    }
 }

@@ -16,6 +16,8 @@
 
 package com.sun.mail.iap;
 
+import android.util.Log;
+
 import java.util.Properties;
 import java.io.*;
 import java.nio.channels.SocketChannel;
@@ -37,6 +39,8 @@ import com.sun.mail.util.MailLogger;
 import com.sun.mail.util.SocketFetcher;
 import com.sun.mail.util.TraceInputStream;
 import com.sun.mail.util.TraceOutputStream;
+
+import bravo.mail.fairmail.utils.TrafficStatsHelper;
 
 /**
  * General protocol handling code for IMAP-like protocols. <p>
@@ -352,7 +356,7 @@ public class Protocol {
 		try {
 			socket.setSoTimeout(10 * 1000);
 		} catch (SocketException ex) {
-			eu.faircode.email.Log.e(ex);
+			Log.e("Protocol",ex.toString());
 		}
 
 	commandStart(command);
@@ -636,7 +640,7 @@ public class Protocol {
 	    }
 	    socket = null;
 		if (traceInput != null && traceOutput != null)
-			eu.faircode.email.TrafficStatsHelper.report(host, prefix,
+			TrafficStatsHelper.report(host, prefix,
 					traceOutput.getSent(), traceInput.getReceived());
 	}
     }

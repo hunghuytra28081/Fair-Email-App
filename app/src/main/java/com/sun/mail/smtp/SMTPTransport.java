@@ -43,6 +43,11 @@ import com.sun.mail.util.TraceInputStream;
 import com.sun.mail.util.TraceOutputStream;
 import com.sun.mail.auth.Ntlm;
 
+import bravo.mail.fairmail.BuildConfig;
+import bravo.mail.fairmail.utils.ConnectionHelper;
+import bravo.mail.fairmail.utils.ObjectHolder;
+import bravo.mail.fairmail.utils.TrafficStatsHelper;
+
 /**
  * This class implements the Transport abstract class using SMTP for
  * message submission and transport. <p>
@@ -862,7 +867,7 @@ public class SMTPTransport extends Transport {
 	    try {
 		    return a.authenticate(host, authzid, user, passwd);
 	    } catch (MessagingException ex) {
-		    eu.faircode.email.Log.w(ex);
+//		    eu.faircode.email.Log.w(ex);
 		    mex = ex;
 	    }
 	}
@@ -1302,7 +1307,7 @@ public class SMTPTransport extends Transport {
 	    mailFrom();
 	    rcptTo();
 
-	    eu.faircode.email.ObjectHolder<Integer> total = new eu.faircode.email.ObjectHolder<>();
+	    ObjectHolder<Integer> total = new ObjectHolder<>();
 	    total.value = 0;
 	    this.message.writeTo(new OutputStream(){
 			@Override
@@ -1313,10 +1318,10 @@ public class SMTPTransport extends Transport {
 
 	    Integer _fd = null;
 	    try {
-			if (eu.faircode.email.BuildConfig.DEBUG)
+			if (BuildConfig.DEBUG)
 				_fd = ParcelFileDescriptor.fromSocket(serverSocket).getFd();
 		} catch (Throwable ex) {
-			eu.faircode.email.Log.w(ex);
+//			eu.faircode.email.Log.w(ex);
 		}
 	    final Integer fd = _fd;
 
@@ -1332,7 +1337,7 @@ public class SMTPTransport extends Transport {
 
 					int q = 0;
 					if (fd != null)
-						q = eu.faircode.email.ConnectionHelper.jni_socket_get_send_buffer(fd);
+						q = ConnectionHelper.jni_socket_get_send_buffer(fd);
 					if (q > pos)
 						q = pos;
 
@@ -1342,7 +1347,7 @@ public class SMTPTransport extends Transport {
 
 					reporter.report(sent, total);
 				} catch (Throwable ex) {
-					eu.faircode.email.Log.e(ex);
+//					eu.faircode.email.Log.e(ex);
 				}
 			}
 		});
@@ -1478,7 +1483,7 @@ public class SMTPTransport extends Transport {
 	    serverInput = null;
 	    lineInputStream = null;
 		if (traceInput != null && traceOutput != null)
-			eu.faircode.email.TrafficStatsHelper.report(host, name,
+			TrafficStatsHelper.report(host, name,
 					traceOutput.getSent(), traceInput.getReceived());
 	    if (super.isConnected())	// only notify if already connected
 		super.close();

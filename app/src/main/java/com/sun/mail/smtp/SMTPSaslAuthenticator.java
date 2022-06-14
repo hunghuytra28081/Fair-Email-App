@@ -20,6 +20,7 @@ package com.sun.mail.smtp;
 */
 
 import android.util.Base64;
+import android.util.Log;
 
 import com.sun.mail.util.MailLogger;
 
@@ -28,8 +29,7 @@ import java.util.Properties;
 
 import javax.mail.MessagingException;
 
-import eu.faircode.email.Helper;
-import eu.faircode.email.Log;
+import bravo.mail.fairmail.utils.Helper;
 
 // https://github.com/javaee/javamail/blob/master/mail/src/main/java/com/sun/mail/smtp/SMTPSaslAuthenticator.java
 public class SMTPSaslAuthenticator implements SaslAuthenticator {
@@ -66,12 +66,12 @@ public class SMTPSaslAuthenticator implements SaslAuthenticator {
         }
 
         if (resp == 235) { // Authentication Succeeded
-            Log.i("SASL SMTP already authenticated");
+            Log.i("SMTPSaslAuthenticator","SASL SMTP already authenticated");
             return true;
         }
 
         if (resp != 334) { // server challenge
-            Log.i("SASL SMTP response=" + resp);
+            Log.i("SMTPSaslAuthenticator","SASL SMTP response=" + resp);
             throw new UnsupportedOperationException("SASL not supported");
         }
 
@@ -86,18 +86,18 @@ public class SMTPSaslAuthenticator implements SaslAuthenticator {
         }
 
         if (resp != 235) {
-            Log.i("SASL SMTP not authenticated response=" + resp);
+            Log.i("SMTPSaslAuthenticator","SASL SMTP not authenticated response=" + resp);
             throw new UnsupportedOperationException("SASL not authenticated");
         }
 
-        Log.i("SASL SMTP authenticated");
+        Log.i("SMTPSaslAuthenticator","SASL SMTP authenticated");
         return true;
     }
 
     private static int simpleCommand(SMTPTransport pr, String command) throws MessagingException {
-        Log.i("SASL SMTP command=" + command);
+        Log.i("SMTPSaslAuthenticator","SASL SMTP command=" + command);
         int resp = pr.simpleCommand(command);
-        Log.i("SASL SMTP response=" + pr.getLastServerResponse());
+        Log.i("SMTPSaslAuthenticator","SASL SMTP response=" + pr.getLastServerResponse());
         return resp;
     }
 

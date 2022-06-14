@@ -44,9 +44,6 @@ import androidx.lifecycle.LifecycleOwner;
 import androidx.lifecycle.OnLifecycleEvent;
 
 import bravo.mail.fairmail.R;
-import bravo.mail.fairmail.utils.CenteredImageSpan;
-import bravo.mail.fairmail.utils.Helper;
-import bravo.mail.fairmail.utils.SpannableStringBuilderEx;
 
 public class PopupMenuLifecycle extends PopupMenu {
 
@@ -105,7 +102,7 @@ public class PopupMenuLifecycle extends PopupMenu {
         for (int i = 0; i < menu.size(); i++) {
             MenuItem item = menu.getItem(i);
             CharSequence title = item.getTitle();
-            insertIcon(context, item, submenu);
+//            insertIcon(context, item, submenu);
             if (item.hasSubMenu()) {
                 SubMenu sub = item.getSubMenu();
                 boolean has = false;
@@ -121,7 +118,7 @@ public class PopupMenuLifecycle extends PopupMenu {
         }
     }
 
-    static void insertIcon(Context context, MenuItem menuItem, boolean submenu) {
+    /*static void insertIcon(Context context, MenuItem menuItem, boolean submenu) {
         Drawable icon = menuItem.getIcon();
 
         if (icon == null)
@@ -145,5 +142,5 @@ public class PopupMenuLifecycle extends PopupMenu {
         if (submenu)
             menuItem.setIcon(null);
         menuItem.setTitleCondensed("");
-    }
+    }*/
 }

@@ -672,7 +672,7 @@ public class IMAPStore extends Store
 			crumb.put("host", host);
 			crumb.put("connections", Integer.toString(pool.getConnections()));
 			crumb.put("inuse", Boolean.toString(pool.storeConnectionInUse));
-			eu.faircode.email.Log.breadcrumb("protocolConnect", crumb);
+//			eu.faircode.email.Log.breadcrumb("protocolConnect", crumb);
 		}
 
             boolean poolEmpty;
@@ -932,7 +932,7 @@ public class IMAPStore extends Store
 
 	if (!p.hasCapability("LOGINDISABLED") && !xoauth2)
 		try {
-			eu.faircode.email.Log.i("Trying LOGIN");
+//			eu.faircode.email.Log.i("Trying LOGIN");
 			p.login(user, password);
 			return;
 		} catch (ProtocolException ex) {
@@ -1050,7 +1050,7 @@ public class IMAPStore extends Store
                             p.disconnect();
                         } catch (Exception ex2) { }
                     p = null;
-					eu.faircode.email.Log.e(new MessagingException("IMAP connection failure", ex1));
+//					eu.faircode.email.Log.e(new MessagingException("IMAP connection failure", ex1));
 					throw new MessagingException("connection failure", ex1);
                 }
                  
@@ -1166,7 +1166,7 @@ public class IMAPStore extends Store
 			crumb.put("reason", reason);
 			crumb.put("connections", Integer.toString(pool.getConnections()));
 			crumb.put("inuse", Boolean.toString(pool.storeConnectionInUse));
-			eu.faircode.email.Log.breadcrumb("getStoreProtocol", crumb);
+//			eu.faircode.email.Log.breadcrumb("getStoreProtocol", crumb);
 		}
 
 	while (p == null) {
@@ -1224,7 +1224,7 @@ public class IMAPStore extends Store
 		    p = null;
 		    pool.wait(pool.clientTimeoutInterval);
 		    if (pool.storeConnectionInUse) {
-				eu.faircode.email.Log.e("getStoreProtocol timeout " + reason);
+//				eu.faircode.email.Log.e("getStoreProtocol timeout " + reason);
 				throw new InterruptedException("getStoreProtocol timeout" + reason);
 			}
 		} catch (InterruptedException ex) {
@@ -1345,7 +1345,7 @@ public class IMAPStore extends Store
 			crumb.put("folder", folder.fullName);
 			crumb.put("connections", Integer.toString(pool.getConnections()));
 			crumb.put("inuse", Boolean.toString(pool.storeConnectionInUse));
-			eu.faircode.email.Log.breadcrumb("releaseProtocol", crumb);
+//			eu.faircode.email.Log.breadcrumb("releaseProtocol", crumb);
 		}
 
         synchronized (pool) {
@@ -1385,7 +1385,7 @@ public class IMAPStore extends Store
 			crumb.put("host", host);
 			crumb.put("connections", Integer.toString(pool.getConnections()));
 			crumb.put("inuse", Boolean.toString(pool.storeConnectionInUse));
-			eu.faircode.email.Log.breadcrumb("releaseStoreProtocol", crumb);
+//			eu.faircode.email.Log.breadcrumb("releaseStoreProtocol", crumb);
 		}
 
 	// will be called from idle() without the Store lock held,
@@ -1435,7 +1435,7 @@ public class IMAPStore extends Store
 			crumb.put("host", host);
 			crumb.put("connections", Integer.toString(pool.getConnections()));
 			crumb.put("inuse", Boolean.toString(pool.storeConnectionInUse));
-			eu.faircode.email.Log.breadcrumb("releaseFolderStoreProtocol", crumb);
+//			eu.faircode.email.Log.breadcrumb("releaseFolderStoreProtocol", crumb);
 		}
 
 	if (protocol == null)
@@ -1462,7 +1462,7 @@ public class IMAPStore extends Store
 			crumb.put("connections", Integer.toString(pool.getConnections()));
 			crumb.put("inuse", Boolean.toString(pool.storeConnectionInUse));
 			crumb.put("force", Boolean.toString(force));
-			eu.faircode.email.Log.breadcrumb("emptyConnectionPool", crumb);
+//			eu.faircode.email.Log.breadcrumb("emptyConnectionPool", crumb);
 		}
 
         synchronized (pool) {
@@ -1812,7 +1812,7 @@ public class IMAPStore extends Store
 			crumb.put("connections", Integer.toString(pool.getConnections()));
 			crumb.put("inuse", Boolean.toString(pool.storeConnectionInUse));
 			crumb.put("force", Boolean.toString(force));
-			eu.faircode.email.Log.breadcrumb("closeAllFolders", crumb);
+//			eu.faircode.email.Log.breadcrumb("closeAllFolders", crumb);
 		}
 	// To avoid violating the locking hierarchy, there's no lock we
 	// can hold that prevents another thread from trying to open a
@@ -2180,7 +2180,7 @@ public class IMAPStore extends Store
 			// give up lock and wait to be not idle
 			pool.wait(pool.clientTimeoutInterval);
 			if (pool.idleState != ConnectionPool.RUNNING) {
-				eu.faircode.email.Log.e("idle timeout");
+//				eu.faircode.email.Log.e("idle timeout");
 				throw new InterruptedException("idle timeout");
 			}
 		    } catch (InterruptedException ex) {
@@ -2277,7 +2277,7 @@ public class IMAPStore extends Store
 		// give up lock and wait to be not idle
 		pool.wait(pool.clientTimeoutInterval);
 		if (pool.idleState != ConnectionPool.RUNNING) {
-			eu.faircode.email.Log.e("waitIfIdle timeout");
+//			eu.faircode.email.Log.e("waitIfIdle timeout");
 			throw new InterruptedException("waitIfIdle timeout");
 		}
 	    } catch (InterruptedException ex) {

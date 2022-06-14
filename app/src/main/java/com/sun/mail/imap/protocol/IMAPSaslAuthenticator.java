@@ -20,6 +20,7 @@ package com.sun.mail.imap.protocol;
 */
 
 import android.util.Base64;
+import android.util.Log;
 
 import com.sun.mail.iap.Argument;
 import com.sun.mail.iap.ProtocolException;
@@ -30,8 +31,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Properties;
 
-import eu.faircode.email.Helper;
-import eu.faircode.email.Log;
+import bravo.mail.fairmail.utils.Helper;
 
 // https://github.com/javaee/javamail/blob/master/mail/src/main/java/com/sun/mail/imap/protocol/IMAPSaslAuthenticator.java
 public class IMAPSaslAuthenticator implements SaslAuthenticator {
@@ -63,29 +63,29 @@ public class IMAPSaslAuthenticator implements SaslAuthenticator {
         List<Response> v = new ArrayList<>();
         String tag = null;
         Response r = null;
+
         boolean done = false;
 
         try {
-            Log.i("SASL IMAP command=AUTHENTICATE");
+            Log.i("IMAPSaslAuthenticator","SASL IMAP command=AUTHENTICATE");
             Argument args = new Argument();
             args.writeAtom("CRAM-MD5");
             tag = pr.writeCommand("AUTHENTICATE", args);
-            Log.i("SASL IMAP tag=" + tag);
+            Log.i("IMAPSaslAuthenticator","SASL IMAP tag=" + tag);
         } catch (Exception ex) {
             r = Response.byeResponse(ex);
             done = true;
         }
-
         while (!done) {
             try {
                 r = pr.readResponse();
-                Log.i("SASL IMAP response=" + r);
+                Log.i("IMAPSaslAuthenticator","SASL IMAP response=" + r);
                 if (r.isContinuation()) {
                     byte[] nonce = Base64.decode(r.getRest(), Base64.NO_WRAP);
-                    Log.i("SASL IMAP nonce=" + new String(nonce));
+                    Log.i("IMAPSaslAuthenticator","SASL IMAP nonce=" + new String(nonce));
                     String hmac = Helper.HMAC("MD5", 64, p.getBytes(), nonce);
                     String hash = Base64.encodeToString((u + " " + hmac).getBytes(), Base64.NO_WRAP) + "\r\n";
-                    Log.i("SASL IMAP hash=" + hash);
+                    Log.i("IMAPSaslAuthenticator","SASL IMAP hash=" + hash);
                     pr.getIMAPOutputStream().write(hash.getBytes());
                     pr.getIMAPOutputStream().flush();
                 } else if (r.isTagged() && r.getTag().equals(tag))
@@ -106,11 +106,11 @@ public class IMAPSaslAuthenticator implements SaslAuthenticator {
             pr.handleLoginResult(r);
             pr.setCapabilities(r);
         } catch (ProtocolException ex) {
-            Log.i(ex);
+            Log.i("IMAPSaslAuthenticator",ex.getMessage());
             throw new UnsupportedOperationException("SASL not authenticated");
         }
 
-        Log.i("SASL IMAP authenticated");
+        Log.i("IMAPSaslAuthenticator","SASL IMAP authenticated");
         return true;
     }
 }

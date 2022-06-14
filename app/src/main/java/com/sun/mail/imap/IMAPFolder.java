@@ -16,6 +16,8 @@
 
 package com.sun.mail.imap;
 
+import android.util.Log;
+
 import java.util.Date;
 import java.util.Vector;
 import java.util.Hashtable;
@@ -2400,7 +2402,7 @@ public class IMAPFolder extends Folder implements UIDFolder, ResponseHandler {
 
 	} catch (CommandFailedException cfx) {
 	    // unsupported charset or search criterion
-		eu.faircode.email.Log.e(new MessagingException(term.getClass().getName(), cfx));
+		Log.e("IMAPFolder", String.valueOf(new MessagingException(term.getClass().getName(), cfx)));
 		if (term instanceof MessageIDTerm) // Yandex: NO [UNAVAILABLE] SEARCH Backend error. sc=...
 			return new Message[0];
 	    return super.search(term);
@@ -2656,7 +2658,7 @@ public class IMAPFolder extends Folder implements UIDFolder, ResponseHandler {
 	} catch (ProtocolException pex) {
 	    throw new MessagingException(pex.getMessage(), pex);
 	} catch (ArrayIndexOutOfBoundsException ex) {
-		eu.faircode.email.Log.w(ex);
+		Log.w("IMAPFolder",ex);
 		/*
 			java.lang.ArrayIndexOutOfBoundsException: message number (0) out of bounds (110)
 					at com.sun.mail.imap.MessageCache.getMessage(SourceFile:116)
@@ -3658,7 +3660,7 @@ public class IMAPFolder extends Folder implements UIDFolder, ResponseHandler {
 			Folder f = store.getFolder(mailbox);
 			notifyFolderChangeListeners(f);
 		} catch (Throwable ex) {
-			eu.faircode.email.Log.e(ex);
+			Log.e("IMAPFolder",ex.toString());
 		}
     }
 
@@ -4058,7 +4060,7 @@ public class IMAPFolder extends Folder implements UIDFolder, ResponseHandler {
 		if (seqnum < 1) {
 			// rfc3501 2.3.1.2: "A relative position from 1 to the number of messages in the mailbox."
 			// Some servers return sequence number zero when there are no messages (found)
-			eu.faircode.email.Log.w("Sequence=" + seqnum);
+			Log.w("IMAPFolder","Sequence=" + seqnum);
 			return null;
 		}
 	if (seqnum > messageCache.size()) {

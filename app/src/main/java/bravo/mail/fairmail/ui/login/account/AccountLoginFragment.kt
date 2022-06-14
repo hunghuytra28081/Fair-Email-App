@@ -1,29 +1,42 @@
 package bravo.mail.fairmail.ui.login.account
 
+import android.Manifest
+import android.accounts.AccountManager
+import android.accounts.AccountManagerCallback
+import android.accounts.AuthenticatorException
+import android.app.Activity
 import android.content.DialogInterface
 import android.content.Intent
 import android.os.Bundle
+import android.os.Handler
 import android.text.SpannableString
 import android.text.TextUtils
 import android.text.style.RelativeSizeSpan
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.Menu
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Toast
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.widget.PopupMenu
-import androidx.appcompat.widget.ThemedSpinnerAdapter
 import androidx.core.view.MenuCompat
 import androidx.fragment.app.Fragment
+import androidx.lifecycle.Lifecycle
 import androidx.localbroadcastmanager.content.LocalBroadcastManager
 import bravo.mail.fairmail.BuildConfig
 import bravo.mail.fairmail.R
+import bravo.mail.fairmail.ui.login.account.ChooseAccountActivity.Companion.REQUEST_CHOOSE_ACCOUNT
+import bravo.mail.fairmail.ui.login.account.ChooseAccountActivity.Companion.REQUEST_DONE
 import bravo.mail.fairmail.utils.Helper
 import bravo.mail.fairmail.utils.Helper.hasValidFingerprint
 import bravo.mail.fairmail.utils.Helper.viewFAQ
+import bravo.mail.fairmail.utils.ServiceAuthenticator
 import bravo.mail.fairmail.utils.popup.PopupMenuLifecycle
 import bravo.mail.fairmail.utils.provider.EmailProvider
 import kotlinx.android.synthetic.main.fragment_account_login.*
+import java.lang.Boolean
+import java.util.concurrent.TimeUnit
 
 
 class AccountLoginFragment : Fragment() {
@@ -176,6 +189,16 @@ class AccountLoginFragment : Fragment() {
         }
     }
 
+    override fun startActivityForResult(intent: Intent, requestCode: Int) {
+        try {
+            Log.i("GmailFragment", "Start intent=$intent request=$requestCode")
+            super.startActivityForResult(intent, requestCode)
+        } catch (e: Exception) {
+            Helper.reportNoViewer(context, intent, e)
+            Toast.makeText(requireContext(), e.localizedMessage, Toast.LENGTH_SHORT).show()
+        }
+    }
+    
     companion object {
         fun newInstance() = AccountLoginFragment()
     }

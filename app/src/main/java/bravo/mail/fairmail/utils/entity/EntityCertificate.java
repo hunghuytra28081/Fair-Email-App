@@ -19,8 +19,6 @@ package bravo.mail.fairmail.utils.entity;
     Copyright 2018-2022 by Marcel Bokhorst (M66B)
 */
 
-import static org.bouncycastle.asn1.x509.Extension.subjectKeyIdentifier;
-
 import android.text.TextUtils;
 import android.util.Base64;
 import android.util.Log;
@@ -36,6 +34,7 @@ import org.bouncycastle.asn1.x500.AttributeTypeAndValue;
 import org.bouncycastle.asn1.x500.RDN;
 import org.bouncycastle.asn1.x500.X500Name;
 import org.bouncycastle.asn1.x500.style.BCStyle;
+import org.bouncycastle.asn1.x509.Extension;
 import org.bouncycastle.asn1.x509.GeneralName;
 import org.bouncycastle.asn1.x509.SubjectKeyIdentifier;
 import org.bouncycastle.cert.jcajce.JcaX509CertificateHolder;
@@ -51,7 +50,6 @@ import java.security.cert.CertificateEncodingException;
 import java.security.cert.CertificateException;
 import java.security.cert.CertificateFactory;
 import java.security.cert.CertificateParsingException;
-import java.security.cert.Extension;
 import java.security.cert.X509Certificate;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -143,13 +141,13 @@ public class EntityCertificate {
         return Helper.sha256(certificate.getEncoded());
     }
 
-    public static String getFingerprintSha1(X509Certificate certificate) throws CertificateEncodingException, NoSuchAlgorithmException {
+    static String getFingerprintSha1(X509Certificate certificate) throws CertificateEncodingException, NoSuchAlgorithmException {
         return Helper.sha1(certificate.getEncoded());
     }
 
-    public static String getKeyId(X509Certificate certificate) {
+    static String getKeyId(X509Certificate certificate) {
         try {
-            byte[] extension = certificate.getExtensionValue(subjectKeyIdentifier.getId());
+            byte[] extension = certificate.getExtensionValue(Extension.subjectKeyIdentifier.getId());
             if (extension == null)
                 return null;
             byte[] bytes = DEROctetString.getInstance(extension).getOctets();
@@ -196,7 +194,7 @@ public class EntityCertificate {
         try {
             X500Name name = new JcaX509CertificateHolder(certificate).getSubject();
             if (name != null) {
-                List<RDN> rdns = new ArrayList<RDN>();
+                List<RDN> rdns = new ArrayList<>();
                 rdns.addAll(Arrays.asList(name.getRDNs(BCStyle.CN)));
                 rdns.addAll(Arrays.asList(name.getRDNs(BCStyle.EmailAddress)));
                 for (RDN rdn : rdns)

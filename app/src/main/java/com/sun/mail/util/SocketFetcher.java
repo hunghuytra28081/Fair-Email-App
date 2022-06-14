@@ -17,6 +17,7 @@
 package com.sun.mail.util;
 
 import android.text.TextUtils;
+import android.util.Log;
 
 import java.security.*;
 import java.net.*;
@@ -30,6 +31,8 @@ import java.util.logging.Level;
 import java.security.cert.*;
 import javax.net.*;
 import javax.net.ssl.*;
+
+import bravo.mail.fairmail.utils.TrafficStatsHelper;
 
 /**
  * This class is used to get Sockets. Depending on the arguments passed
@@ -311,7 +314,7 @@ public class SocketFetcher {
 		socket = SocketChannel.open().socket();
 	    } else {
 				SocketFactory f = (SocketFactory) props.get("fairemail.factory");
-				eu.faircode.email.Log.i("Using socket factory=" + f);
+//				eu.faircode.email.Log.i("Using socket factory=" + f);
 				socket = (f == null ? new Socket() : f.createSocket());
 	    }
 	}
@@ -334,7 +337,7 @@ public class SocketFetcher {
 	    String server = props.getProperty("fairemail.server");
 	    if (!TextUtils.isEmpty(server))
 				iaddr = InetAddress.getByAddress(server, iaddr.getAddress());
-	    eu.faircode.email.Log.i("Socket connect " + iaddr +
+	    Log.i("SocketFetcher","Socket connect " + iaddr +
 				" timeout=" + cto +
 				" server=" + server +
 				" reuse=" + socket.getReuseAddress() +
@@ -347,8 +350,8 @@ public class SocketFetcher {
 		socket.connect(new InetSocketAddress(iaddr, port), cto);
 	    else
 		socket.connect(new InetSocketAddress(iaddr, port));
-		eu.faircode.email.TrafficStatsHelper.connect(host, port, prefix);
-	    eu.faircode.email.Log.i("Socket connected" +
+		TrafficStatsHelper.connect(host, port, prefix);
+	    Log.i("SocketFetcher","Socket connected" +
 				" local=" + socket.getLocalSocketAddress() +
 				" remote=" + socket.getRemoteSocketAddress());
 	    logger.finest("success!");

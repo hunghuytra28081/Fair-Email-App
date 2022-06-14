@@ -36,8 +36,6 @@ import java.io.IOException;
 import java.util.Date;
 import java.util.Objects;
 
-import bravo.mail.fairmail.utils.entity.EntityLog;
-
 public class GmailState {
     private String token;
     private long acquired;
@@ -69,16 +67,16 @@ public class GmailState {
             throws AuthenticatorException, OperationCanceledException, IOException {
         Long expiration = getAccessTokenExpirationTime();
         if (expiration != null && expiration - keep_alive < new Date().getTime()) {
-            EntityLog.log(context, "Force invalidation" +
-                    " expiration=" + new Date(expiration) +
-                    " keep-alive=" + (keep_alive / 60 / 1000) + "m");
+//            EntityLog.log(context, "Force invalidation" +
+//                    " expiration=" + new Date(expiration) +
+//                    " keep-alive=" + (keep_alive / 60 / 1000) + "m");
             expire = true;
         }
 
         if (expire)
             try {
                 if (token != null) {
-                    EntityLog.log(context, "Invalidating token user=" + user);
+//                    EntityLog.log(context, "Invalidating token user=" + user);
                     AccountManager am = AccountManager.get(context);
                     am.invalidateAuthToken(TYPE_GOOGLE, token);
                 }
@@ -92,7 +90,7 @@ public class GmailState {
         if (account == null)
             throw new AuthenticatorException("Account not found for " + user);
 
-        EntityLog.log(context, "Getting token user=" + user);
+//        EntityLog.log(context, "Getting token user=" + user);
         AccountManager am = AccountManager.get(context);
         String newToken = am.blockingGetAuthToken(
                 account,

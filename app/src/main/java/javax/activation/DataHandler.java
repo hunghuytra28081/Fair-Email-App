@@ -12,6 +12,8 @@ package javax.activation;
 
 import static android.os.Process.THREAD_PRIORITY_BACKGROUND;
 
+import android.util.Log;
+
 import com.sun.mail.imap.IMAPNestedMessage;
 
 import java.io.InputStream;
@@ -253,7 +255,7 @@ public class DataHandler /*implements Transferable*/ {
 				throw new IOException(ex);
 			}
 
-		eu.faircode.email.Log.e("DataHandler" +
+		Log.e("DataHandle","DataHandler" +
 				" object=" + (object == null ? null : object.getClass().getName()) +
 				" dch=" + dch.getClass().getName() +
 				" type=" + getContentType());

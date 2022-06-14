@@ -155,7 +155,6 @@ import java.util.regex.Pattern;
 
 import bravo.mail.fairmail.BuildConfig;
 import bravo.mail.fairmail.R;
-import bravo.mail.fairmail.extension.ApplicationEx;
 
 public class Helper {
     private static Boolean hasWebView = null;
@@ -492,13 +491,13 @@ public class Helper {
         }
     }
 
-    public static boolean isPlayStoreInstall() {
-        return BuildConfig.PLAY_STORE_RELEASE;
-    }
-
-    static boolean isAmazonInstall() {
-        return BuildConfig.AMAZON_RELEASE;
-    }
+//    public static boolean isPlayStoreInstall() {
+//        return BuildConfig.PLAY_STORE_RELEASE;
+//    }
+//
+//    static boolean isAmazonInstall() {
+//        return BuildConfig.AMAZON_RELEASE;
+//    }
 
     static boolean hasPlayStore(Context context) {
         if (hasPlayStore == null)
@@ -1152,12 +1151,12 @@ public class Helper {
     }
 
     public static void reportNoViewer(Context context, @NonNull Intent intent, @Nullable Throwable ex) {
-        if (ex != null) {
+        /*if (ex != null) {
             if (ex instanceof ActivityNotFoundException && BuildConfig.PLAY_STORE_RELEASE)
                 Log.w("Helper", ex);
             else
                 Log.e("Helper", ex.toString());
-        }
+        }*/
 
         if (Helper.isTnef(intent.getType(), null)) {
             Helper.viewFAQ(context, 155);
@@ -1544,7 +1543,7 @@ public class Helper {
         return SimpleDateFormat.getDateInstance(style);
     }
 
-    static DateFormat getDateTimeInstance(Context context) {
+    public static DateFormat getDateTimeInstance(Context context) {
         return getDateTimeInstance(context, SimpleDateFormat.MEDIUM, SimpleDateFormat.MEDIUM);
     }
 
@@ -1604,7 +1603,7 @@ public class Helper {
         }
     }*/
 
-    static String getString(Context context, String language, int resid, Object... formatArgs) {
+    public static String getString(Context context, String language, int resid, Object... formatArgs) {
         if (language == null)
             return context.getString(resid, formatArgs);
         return getString(context, new Locale(language), resid, formatArgs);
@@ -1617,11 +1616,11 @@ public class Helper {
         return res.getString(resid, formatArgs);
     }
 
-    static String[] getStrings(Context context, int resid, Object... formatArgs) {
+    public static String[] getStrings(Context context, int resid, Object... formatArgs) {
         return getStrings(context, null, resid, formatArgs);
     }
 
-    static String[] getStrings(Context context, String language, int resid, Object... formatArgs) {
+    public static String[] getStrings(Context context, String language, int resid, Object... formatArgs) {
         List<Locale> locales = new ArrayList<>();
 
         if (language != null)
@@ -2059,7 +2058,7 @@ public class Helper {
             urlConnection.setReadTimeout(timeout);
             urlConnection.setConnectTimeout(timeout);
             urlConnection.setInstanceFollowRedirects(true);
-            ConnectionHelper.setUserAgent(context, urlConnection);
+//            ConnectionHelper.setUserAgent(context, urlConnection);
             urlConnection.connect();
 
             try {
@@ -2490,70 +2489,70 @@ public class Helper {
         prefs.edit().remove("last_authentication").apply();
     }
 
-    static void selectKeyAlias(final Activity activity, final LifecycleOwner owner, final String alias, final IKeyAlias intf) {
-        final Context context = activity.getApplicationContext();
-        new Thread(new Runnable() {
-            @Override
-            public void run() {
-                if (alias != null)
-                    try {
-                        if (KeyChain.getPrivateKey(context, alias) != null) {
-                            Log.i("Helper", "Private key available alias=" + alias);
-                            deliver(alias);
-                            return;
-                        }
-                    } catch (KeyChainException ex) {
-                        Log.w("Helper", ex);
-                    } catch (Throwable ex) {
-                        Log.e("Helper", ex.toString());
-                    }
-
-                ApplicationEx.getMainHandler().post(new Runnable() {
-                    @Override
-                    public void run() {
-                        KeyChain.choosePrivateKeyAlias(activity, new KeyChainAliasCallback() {
-                                    @Override
-                                    public void alias(@Nullable final String alias) {
-                                        Log.i("Helper", "Selected key alias=" + alias);
-                                        deliver(alias);
-                                    }
-                                },
-                                null, null, null, -1, alias);
-                    }
-                });
-            }
-
-            private void deliver(final String selected) {
-                ApplicationEx.getMainHandler().post(new Runnable() {
-                    @Override
-                    public void run() {
-                        if (owner.getLifecycle().getCurrentState().isAtLeast(Lifecycle.State.STARTED)) {
-                            if (selected == null)
-                                intf.onNothingSelected();
-                            else
-                                intf.onSelected(selected);
-                        } else {
-                            owner.getLifecycle().addObserver(new LifecycleObserver() {
-                                @OnLifecycleEvent(Lifecycle.Event.ON_START)
-                                public void onStart() {
-                                    owner.getLifecycle().removeObserver(this);
-                                    if (selected == null)
-                                        intf.onNothingSelected();
-                                    else
-                                        intf.onSelected(selected);
-                                }
-
-                                @OnLifecycleEvent(Lifecycle.Event.ON_DESTROY)
-                                public void onDestroy() {
-                                    owner.getLifecycle().removeObserver(this);
-                                }
-                            });
-                        }
-                    }
-                });
-            }
-        }).start();
-    }
+//    static void selectKeyAlias(final Activity activity, final LifecycleOwner owner, final String alias, final IKeyAlias intf) {
+//        final Context context = activity.getApplicationContext();
+//        new Thread(new Runnable() {
+//            @Override
+//            public void run() {
+//                if (alias != null)
+//                    try {
+//                        if (KeyChain.getPrivateKey(context, alias) != null) {
+//                            Log.i("Helper", "Private key available alias=" + alias);
+//                            deliver(alias);
+//                            return;
+//                        }
+//                    } catch (KeyChainException ex) {
+//                        Log.w("Helper", ex);
+//                    } catch (Throwable ex) {
+//                        Log.e("Helper", ex.toString());
+//                    }
+//
+//                ApplicationEx.getMainHandler().post(new Runnable() {
+//                    @Override
+//                    public void run() {
+//                        KeyChain.choosePrivateKeyAlias(activity, new KeyChainAliasCallback() {
+//                                    @Override
+//                                    public void alias(@Nullable final String alias) {
+//                                        Log.i("Helper", "Selected key alias=" + alias);
+//                                        deliver(alias);
+//                                    }
+//                                },
+//                                null, null, null, -1, alias);
+//                    }
+//                });
+//            }
+//
+//            private void deliver(final String selected) {
+//                ApplicationEx.getMainHandler().post(new Runnable() {
+//                    @Override
+//                    public void run() {
+//                        if (owner.getLifecycle().getCurrentState().isAtLeast(Lifecycle.State.STARTED)) {
+//                            if (selected == null)
+//                                intf.onNothingSelected();
+//                            else
+//                                intf.onSelected(selected);
+//                        } else {
+//                            owner.getLifecycle().addObserver(new LifecycleObserver() {
+//                                @OnLifecycleEvent(Lifecycle.Event.ON_START)
+//                                public void onStart() {
+//                                    owner.getLifecycle().removeObserver(this);
+//                                    if (selected == null)
+//                                        intf.onNothingSelected();
+//                                    else
+//                                        intf.onSelected(selected);
+//                                }
+//
+//                                @OnLifecycleEvent(Lifecycle.Event.ON_DESTROY)
+//                                public void onDestroy() {
+//                                    owner.getLifecycle().removeObserver(this);
+//                                }
+//                            });
+//                        }
+//                    }
+//                });
+//            }
+//        }).start();
+//    }
 
     interface IKeyAlias {
         void onSelected(String alias);

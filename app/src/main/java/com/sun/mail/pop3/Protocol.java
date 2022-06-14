@@ -35,6 +35,8 @@ import com.sun.mail.util.TraceInputStream;
 import com.sun.mail.util.TraceOutputStream;
 import com.sun.mail.util.SharedByteArrayOutputStream;
 
+import bravo.mail.fairmail.utils.TrafficStatsHelper;
+
 class Response {
     boolean ok = false;		// true if "+OK"
     boolean cont = false;	// true if "+ " continuation line
@@ -807,7 +809,7 @@ class Protocol {
 	    if (socket != null)
 		socket.close();
 		if (traceInput != null && traceOutput != null)
-			eu.faircode.email.TrafficStatsHelper.report(host, prefix,
+			TrafficStatsHelper.report(host, prefix,
 					traceOutput.getSent(), traceInput.getReceived());
 	} catch (IOException ex) {
 	    // ignore it

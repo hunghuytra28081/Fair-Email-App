@@ -35,9 +35,6 @@ import android.util.Log;
 import androidx.annotation.Nullable;
 import androidx.preference.PreferenceManager;
 
-import com.sun.mail.iap.ConnectionException;
-import com.sun.mail.util.FolderClosedIOException;
-
 import java.io.IOException;
 import java.net.HttpURLConnection;
 import java.net.Inet4Address;
@@ -64,11 +61,10 @@ import javax.net.ssl.SSLSocketFactory;
 
 import bravo.mail.fairmail.BuildConfig;
 import bravo.mail.fairmail.utils.entity.EntityCertificate;
-import bravo.mail.fairmail.utils.entity.EntityLog;
 import inet.ipaddr.IPAddressString;
 
 public class ConnectionHelper {
-    static final List<String> PREF_NETWORK = Collections.unmodifiableList(Arrays.asList(
+    public static final List<String> PREF_NETWORK = Collections.unmodifiableList(Arrays.asList(
             "metered", "roaming", "rlah", "require_validated", "vpn_only" // update network state
     ));
 
@@ -129,11 +125,11 @@ public class ConnectionHelper {
             return (connected != null && connected);
         }
 
-        boolean isSuitable() {
+        public boolean isSuitable() {
             return (suitable != null && suitable);
         }
 
-        boolean isUnmetered() {
+        public boolean isUnmetered() {
             return (unmetered != null && unmetered);
         }
 
@@ -192,7 +188,7 @@ public class ConnectionHelper {
         }
     }
 
-    static NetworkState getNetworkState(Context context) {
+    public static NetworkState getNetworkState(Context context) {
         SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(context);
         boolean metered = prefs.getBoolean("metered", true);
         boolean roaming = prefs.getBoolean("roaming", true);
@@ -393,7 +389,7 @@ public class ConnectionHelper {
     }
 
     @SuppressLint("MissingPermission")
-    static Network getActiveNetwork(Context context) {
+    public static Network getActiveNetwork(Context context) {
         ConnectivityManager cm = Helper.getSystemService(context, ConnectivityManager.class);
         if (cm == null)
             return null;
@@ -418,22 +414,22 @@ public class ConnectionHelper {
         return null;
     }
 
-    static boolean isIoError(Throwable ex) {
-        while (ex != null) {
-            if (isMaxConnections(ex.getMessage()) ||
-                    ex instanceof IOException ||
-                    ex instanceof FolderClosedIOException ||
-                    ex instanceof ConnectionException ||
-                    ex instanceof AccountsException ||
-                    ex instanceof InterruptedException ||
-                    "EOF on socket".equals(ex.getMessage()) ||
-                    "Read timed out".equals(ex.getMessage()) || // POP3
-                    "failed to connect".equals(ex.getMessage()))
-                return true;
-            ex = ex.getCause();
-        }
-        return false;
-    }
+//    public static boolean isIoError(Throwable ex) {
+//        while (ex != null) {
+//            if (isMaxConnections(ex.getMessage()) ||
+//                    ex instanceof IOException ||
+//                    ex instanceof FolderClosedIOException ||
+//                    ex instanceof ConnectionException ||
+//                    ex instanceof AccountsException ||
+//                    ex instanceof InterruptedException ||
+//                    "EOF on socket".equals(ex.getMessage()) ||
+//                    "Read timed out".equals(ex.getMessage()) || // POP3
+//                    "failed to connect".equals(ex.getMessage()))
+//                return true;
+//            ex = ex.getCause();
+//        }
+//        return false;
+//    }
 
     static boolean isMaxConnections(Throwable ex) {
         while (ex != null) {
@@ -501,7 +497,7 @@ public class ConnectionHelper {
                     return Integer.toString(status);
             }
         } catch (Throwable ex) {
-            Log.e("ConnectionHelper",ex);
+            Log.e("ConnectionHelper",ex.toString());
             return null;
         }
     }
@@ -530,7 +526,7 @@ public class ConnectionHelper {
             return (Settings.Global.getInt(context.getContentResolver(),
                     Settings.Global.AIRPLANE_MODE_ON, 0) != 0);
         } catch (Throwable ex) {
-            Log.e(ex);
+            Log.e("ConnectionHelper",ex.toString());
             return false;
         }
     }
@@ -543,7 +539,7 @@ public class ConnectionHelper {
                 try {
                     return Inet4Address.getByAddress(Arrays.copyOfRange(octets, 2, 6));
                 } catch (Throwable ex) {
-                    Log.e(ex);
+                    Log.e("ConnectionHelper",ex.toString());
                 }
         }
         return addr;
@@ -563,7 +559,7 @@ public class ConnectionHelper {
                     addr.isSiteLocalAddress() ||
                     addr.isLinkLocalAddress());
         } catch (UnknownHostException ex) {
-            Log.e("ConnectionHelper",ex,);
+            Log.e("ConnectionHelper",ex.toString());
             return false;
         }
     }
@@ -573,7 +569,7 @@ public class ConnectionHelper {
             return new IPAddressString(net + "/" + prefix).getAddress()
                     .contains(new IPAddressString(ip).getAddress());
         } catch (Throwable ex) {
-            Log.w(ex);
+            Log.w("ConnectionHelper",ex);
             return false;
         }
     }
@@ -588,8 +584,8 @@ public class ConnectionHelper {
                 for (InterfaceAddress iaddr : ni.getInterfaceAddresses()) {
                     InetAddress addr = iaddr.getAddress();
                     boolean local = (addr.isLoopbackAddress() || addr.isLinkLocalAddress());
-                    EntityLog.log(context, EntityLog.Type.Network,
-                            "Interface=" + ni + " addr=" + addr + " local=" + local);
+//                    EntityLog.log(context, EntityLog.Type.Network,
+//                            "Interface=" + ni + " addr=" + addr + " local=" + local);
                     if (!local)
                         if (addr instanceof Inet4Address)
                             has4 = true;
@@ -609,14 +605,14 @@ public class ConnectionHelper {
         return new boolean[]{has4, has6};
     }
 
-    public static List<String> getCommonNames(Context context, String domain, int port, int timeout) throws IOException {
+    /*public static List<String> getCommonNames(Context context, String domain, int port, int timeout) throws IOException {
         List<String> result = new ArrayList<>();
         InetSocketAddress address = new InetSocketAddress(domain, port);
         SocketFactory factory = SSLSocketFactory.getDefault();
         try (SSLSocket sslSocket = (SSLSocket) factory.createSocket()) {
-            EntityLog.log(context, EntityLog.Type.Network, "Connecting to " + address);
+//            EntityLog.log(context, EntityLog.Type.Network, "Connecting to " + address);
             sslSocket.connect(address, timeout);
-            EntityLog.log(context, EntityLog.Type.Network, "Connected " + address);
+//            EntityLog.log(context, EntityLog.Type.Network, "Connected " + address);
 
             sslSocket.setSoTimeout(timeout);
             sslSocket.startHandshake();
@@ -632,9 +628,9 @@ public class ConnectionHelper {
                 }
         }
         return result;
-    }
+    }*/
 
-    public static void setUserAgent(Context context, HttpURLConnection connection) {
+   /* public static void setUserAgent(Context context, HttpURLConnection connection) {
         connection.setRequestProperty("User-Agent", WebViewEx.getUserAgent(context));
 
         if (BuildConfig.DEBUG) {
@@ -666,5 +662,5 @@ public class ConnectionHelper {
                 connection.setRequestProperty("Sec-CH-UA-Model", "\"" + model + "\"");
             }
         }
-    }
+    }*/
 }

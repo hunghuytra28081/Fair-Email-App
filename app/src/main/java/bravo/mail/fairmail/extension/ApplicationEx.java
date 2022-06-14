@@ -54,18 +54,8 @@ import java.util.Locale;
 import java.util.Map;
 
 import bravo.mail.fairmail.BuildConfig;
-import bravo.mail.fairmail.ui.main.MainActivity;
-import bravo.mail.fairmail.utils.EncryptionHelper;
+import bravo.mail.fairmail.ui.login.account.ChooseAccountActivity;
 import bravo.mail.fairmail.utils.Helper;
-import bravo.mail.fairmail.utils.MessageHelper;
-import bravo.mail.fairmail.utils.NotificationHelper;
-import bravo.mail.fairmail.utils.ServiceSynchronize;
-import bravo.mail.fairmail.utils.UriHelper;
-import bravo.mail.fairmail.utils.db.DB;
-import bravo.mail.fairmail.utils.entity.EntityAccount;
-import bravo.mail.fairmail.utils.entity.EntityFolder;
-import bravo.mail.fairmail.utils.entity.EntityLog;
-import bravo.mail.fairmail.utils.info.ContactInfo;
 import bravo.mail.fairmail.utils.provider.EmailProvider;
 
 public class ApplicationEx extends Application
@@ -124,15 +114,15 @@ public class ApplicationEx extends Application
         super.onCreate();
 
         long start = new Date().getTime();
-        Log.i("ApplicationEx","App create" +
-                " version=" + BuildConfig.VERSION_NAME + BuildConfig.REVISION +
-                " process=" + android.os.Process.myPid());
+//        Log.i("App create" +
+//                " version=" + BuildConfig.VERSION_NAME + BuildConfig.REVISION +
+//                " process=" + android.os.Process.myPid());
 //        Log.logMemory(this, "App");
 
         if (BuildConfig.DEBUG)
             UriHelper.test(this);
 
-//        CoalMine.install(this);
+        CoalMine.install(this);
 
         registerActivityLifecycleCallbacks(lifecycleCallbacks);
 
@@ -190,12 +180,12 @@ public class ApplicationEx extends Application
         Thread.setDefaultUncaughtExceptionHandler(new Thread.UncaughtExceptionHandler() {
             @Override
             public void uncaughtException(@NonNull Thread thread, @NonNull Throwable ex) {
-                if (!crash_reports /*&& Log.isOwnFault(ex)*/) {
-                    Log.e("ApplicationEx",ex.toString());
+                if (!crash_reports && Log.isOwnFault(ex)) {
+                    Log.e(ex);
 
                     if (BuildConfig.BETA_RELEASE ||
                             !Helper.isPlayStoreInstall())
-//                        Log.writeCrashLog(ApplicationEx.this, ex);
+                        Log.writeCrashLog(ApplicationEx.this, ex);
 
                     if (prev != null)
                         prev.uncaughtException(thread, ex);
@@ -206,8 +196,8 @@ public class ApplicationEx extends Application
             }
         });
 
-//        Log.setup(this);
-//        CoalMine.setup(leak_canary);
+        Log.setup(this);
+        CoalMine.setup(leak_canary);
 
         upgrade(this);
 
@@ -237,7 +227,7 @@ public class ApplicationEx extends Application
                     EmojiCompat.init(crying);
                 }
             } catch (Throwable ex) {
-                Log.e("ApplicationEx",ex.toString());
+                Log.e(ex);
             }
 
         EmailProvider.init(this);
@@ -260,7 +250,7 @@ public class ApplicationEx extends Application
             try {
                 WorkManager.getInstance(this).cancelUniqueWork("WorkerWatchdog");
             } catch (IllegalStateException ex) {
-                Log.e("ApplicationEx",ex.toString());
+                Log.e("ApplicationEx",ex);
             }
 
             WorkerAutoUpdate.init(this);
@@ -317,12 +307,12 @@ public class ApplicationEx extends Application
                     break;
             }
         } catch (Throwable ex) {
-            Log.e("ApplicationEx",ex.toString());
+            Log.e("ApplicationEx",ex);
         }
     }
 
     static void restart(Context context) {
-        Intent intent = new Intent(context, MainActivity.class);
+        Intent intent = new Intent(context, ChooseAccountActivity.class);
         intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
         context.startActivity(intent);
         Runtime.getRuntime().exit(0);
@@ -341,7 +331,7 @@ public class ApplicationEx extends Application
     public void onLowMemory() {
 //        Log.logMemory(this, "Low memory");
         Map<String, String> crumb = new HashMap<>();
-        crumb.put("free", Integer.toString(1));
+        crumb.put("free", Integer.toString(Log.getFreeMemMb()));
 //        Log.breadcrumb("low", crumb);
 
         ContactInfo.clearCache(this, false);
@@ -556,7 +546,7 @@ public class ApplicationEx extends Application
                             int appWidgetId = Integer.parseInt(k[1]);
                             editor.remove("widget." + appWidgetId + ".background");
                         } catch (Throwable ex) {
-                            Log.e("ApplicationEx",ex.toString());
+                            Log.e(ex);
                         }
                 }
         } else if (version < 1556) {
@@ -653,7 +643,7 @@ public class ApplicationEx extends Application
             @Override
             public void run() {
                 try {
-                    Log.i("ApplicationEx","Repair folders");
+                    Log.i("Repair folders");
                     DB db = DB.getInstance(context);
 
                     List<EntityAccount> accounts = db.account().getAccounts();
@@ -686,7 +676,7 @@ public class ApplicationEx extends Application
                         }
                     }
                 } catch (Throwable ex) {
-                    Log.e("ApplicationEx",ex.toString());
+                    Log.e(ex);
                 }
             }
         }).start();
@@ -805,15 +795,15 @@ public class ApplicationEx extends Application
             long start = last;
             last = SystemClock.elapsedRealtime();
             long elapsed = (start == 0 ? 0 : last - start);
-            Log.i("ApplicationEx",activity.getClass().getSimpleName() + " " + what + " " + elapsed + " ms");
+            Log.i(activity.getClass().getSimpleName() + " " + what + " " + elapsed + " ms");
         }
     };
 
     private final BroadcastReceiver onScreenOff = new BroadcastReceiver() {
         @Override
         public void onReceive(Context context, Intent intent) {
-            Log.i("ApplicationEx","Received " + intent);
-//            Log.logExtras(intent);
+            Log.i("Received " + intent);
+            Log.logExtras(intent);
             SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(context);
             boolean autolock = prefs.getBoolean("autolock", true);
             if (autolock)
@@ -823,7 +813,7 @@ public class ApplicationEx extends Application
 
     private static Handler handler = null;
 
-    public synchronized static Handler getMainHandler() {
+    synchronized static Handler getMainHandler() {
         if (handler == null)
             handler = new Handler(Looper.getMainLooper());
         return handler;

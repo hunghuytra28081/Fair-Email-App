@@ -16,9 +16,11 @@ android {
         versionName "1.0"
 
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
+        manifestPlaceholders = [appAuthRedirectScheme: 'bravo.mail.fairmail']
     }
 
     buildTypes {
+
         release {
             minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
@@ -138,9 +140,9 @@ dependencies {
 //    // https://mvnrepository.com/artifact/androidx.window/window-java
 //    implementation "androidx.appcompat:appcompat:$appcompat_version"
     implementation "androidx.emoji2:emoji2:$emoji_version"
-//    implementation "androidx.activity:activity:$activity_version"
-//    implementation "androidx.fragment:fragment:$fragment_version"
-//    implementation "androidx.window:window-java:$windows_version"
+    implementation "androidx.activity:activity:$activity_version"
+    implementation "androidx.fragment:fragment:$fragment_version"
+    implementation "androidx.window:window-java:$windows_version"
 //
 //    // https://developer.android.com/jetpack/androidx/releases/webkit
 //    // https://mvnrepository.com/artifact/androidx.webkit/webkit
@@ -192,17 +194,17 @@ dependencies {
 //    implementation "androidx.room:room-runtime:$room_version"
 //    implementation "androidx.room:room-common:$room_version" // because of exclude
     // https://mvnrepository.com/artifact/androidx.sqlite/sqlite-framework
-    implementation "androidx.sqlite:sqlite-framework:$sqlite_version" // because of exclude
+//    implementation "androidx.sqlite:sqlite-framework:$sqlite_version" // because of exclude
 //    annotationProcessor "androidx.room:room-compiler:$room_version"
 
     // https://www.sqlite.org/changes.html
     // https://github.com/requery/sqlite-android/
     // https://jitpack.io/#requery/sqlite-android
-    implementation "com.github.requery:sqlite-android:$requery_version"
+//    implementation "com.github.requery:sqlite-android:$requery_version"
 //
 //    // https://mvnrepository.com/artifact/androidx.paging/paging-runtime
 //    // https://developer.android.com/jetpack/androidx/releases/paging
-    implementation "androidx.paging:paging-runtime:$paging_version"
+//    implementation "androidx.paging:paging-runtime:$paging_version"
 //
     // https://mvnrepository.com/artifact/androidx.preference/preference
     implementation("androidx.preference:preference:$preference_version") {
@@ -213,7 +215,7 @@ dependencies {
     implementation "androidx.work:work-runtime:$work_version"
 //
 //    // https://mvnrepository.com/artifact/androidx.exifinterface/exifinterface
-    implementation "androidx.exifinterface:exifinterface:$exif_version"
+//    implementation "androidx.exifinterface:exifinterface:$exif_version"
 //
 //    // https://mvnrepository.com/artifact/androidx.biometric/biometric
 //    // https://developer.android.com/jetpack/androidx/releases/biometric
@@ -268,7 +270,7 @@ dependencies {
 //
 //    // https://github.com/KeepSafe/ReLinker
 //    // https://mvnrepository.com/artifact/com.getkeepsafe.relinker/relinker
-    implementation "com.getkeepsafe.relinker:relinker:$relinker_version"
+//    implementation "com.getkeepsafe.relinker:relinker:$relinker_version"
 //
 //    // https://github.com/noties/Markwon
 //    // https://mvnrepository.com/artifact/io.noties.markwon/core
@@ -309,7 +311,7 @@ dependencies {
 //    implementation "io.reactivex.rxjava2:rxjava:$rxjava2_version"
 //
 //    // http://bigbadaboom.github.io/androidsvg/
-    implementation "com.caverock:androidsvg:$svg_version"
+//    implementation "com.caverock:androidsvg:$svg_version"
 //
 //    // https://commons.apache.org/proper/commons-compress/
 //    // https://mvnrepository.com/artifact/org.apache.commons/commons-compress

@@ -1,4 +1,4 @@
-package bravo.mail.fairmail.utils.tuple;
+package bravo.mail.fairmail.utils;
 
 /*
     This file is part of FairEmail.
@@ -19,23 +19,14 @@ package bravo.mail.fairmail.utils.tuple;
     Copyright 2018-2022 by Marcel Bokhorst (M66B)
 */
 
-import androidx.annotation.Nullable;
+import android.util.Log;
 
-public class TupleMessageWidgetCount {
-    public long folder;
-    public int total;
-    public int seen;
-    public int flagged;
+public class TrafficStatsHelper {
+    public static void connect(String host, int port, String prefix) {
+        Log.e("TrafficStatsHelper","Connected " + prefix + " " + host + ":" + port);
+    }
 
-    @Override
-    public boolean equals(@Nullable Object obj) {
-        if (obj instanceof TupleMessageWidgetCount) {
-            TupleMessageWidgetCount other = (TupleMessageWidgetCount) obj;
-            return (this.folder == other.folder &&
-                    this.total == other.total &&
-                    this.seen == other.seen &&
-                    this.flagged == other.flagged);
-        } else
-            return false;
+    public static void report(String host, String prefix, long sent, long received) {
+        Log.e("TrafficStatsHelper","Disconnected " + prefix + " " + host + " tx=" + sent + " rx=" + received);
     }
 }

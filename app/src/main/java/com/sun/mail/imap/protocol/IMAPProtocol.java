@@ -16,6 +16,8 @@
 
 package com.sun.mail.imap.protocol;
 
+import android.util.Log;
+
 import java.io.*;
 import java.util.*;
 import java.text.*;
@@ -110,7 +112,7 @@ public class IMAPProtocol extends Protocol {
 	try {
 	    this.name = name;
 	    idledone = PropUtil.getBooleanProperty(props, "mail.idledone", true);
-	    eu.faircode.email.Log.i(host + ":" + port + " idledone=" + idledone);
+	    Log.i("IMAPP",host + ":" + port + " idledone=" + idledone);
 	    noauthdebug =
 		!PropUtil.getBooleanProperty(props, "mail.debug.auth", false);
 

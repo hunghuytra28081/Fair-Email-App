@@ -19,7 +19,6 @@ package bravo.mail.fairmail.utils;
     Copyright 2018-2022 by Marcel Bokhorst (M66B)
 */
 
-
 import static bravo.mail.fairmail.utils.GmailState.TYPE_GOOGLE;
 
 import android.accounts.AuthenticatorException;
@@ -29,24 +28,16 @@ import android.util.Log;
 
 import net.openid.appauth.AuthState;
 import net.openid.appauth.AuthorizationException;
-import net.openid.appauth.AuthorizationService;
-import net.openid.appauth.ClientAuthentication;
-import net.openid.appauth.ClientSecretPost;
-import net.openid.appauth.NoClientAuthentication;
 
 import org.json.JSONException;
 
 import java.io.IOException;
+import java.net.Authenticator;
+import java.net.PasswordAuthentication;
 import java.util.Date;
 import java.util.Objects;
-import java.util.concurrent.Semaphore;
 
-import javax.mail.Authenticator;
 import javax.mail.MessagingException;
-import javax.mail.PasswordAuthentication;
-
-import bravo.mail.fairmail.utils.entity.EntityLog;
-import bravo.mail.fairmail.utils.provider.EmailProvider;
 
 public class ServiceAuthenticator extends Authenticator {
     private Context context;
@@ -88,16 +79,20 @@ public class ServiceAuthenticator extends Authenticator {
         }
 
         Log.i("ServiceAuthenticator",user + " returning " + (auth == AUTH_TYPE_PASSWORD ? "password" : "token"));
-        return new PasswordAuthentication(user, token);
+        return new PasswordAuthentication(user,token.toCharArray());
     }
 
     String refreshToken(boolean expire) throws AuthenticatorException, OperationCanceledException, IOException, JSONException, MessagingException {
         if (auth == AUTH_TYPE_GMAIL) {
             GmailState authState = GmailState.jsonDeserialize(password);
-            authState.refresh(context, user, expire, keep_alive);
+            try {
+                authState.refresh(context, user, expire, keep_alive);
+            } catch (OperationCanceledException e) {
+                e.printStackTrace();
+            }
             Long expiration = authState.getAccessTokenExpirationTime();
             if (expiration != null)
-                EntityLog.log(context, user + " token expiration=" + new Date(expiration));
+                Log.e("ServiceAuthenticator", user + " token expiration=" + new Date(expiration));
 
             String newPassword = authState.jsonSerializeString();
             if (!Objects.equals(password, newPassword)) {
@@ -109,10 +104,10 @@ public class ServiceAuthenticator extends Authenticator {
             return authState.getAccessToken();
         } else if (auth == AUTH_TYPE_OAUTH && provider != null) {
             AuthState authState = AuthState.jsonDeserialize(password);
-            OAuthRefresh(context, provider, authState, expire, keep_alive);
+//            OAuthRefresh(context, provider, authState, expire, keep_alive);
             Long expiration = authState.getAccessTokenExpirationTime();
             if (expiration != null)
-                EntityLog.log(context, user + " token expiration=" + new Date(expiration));
+                Log.e("ServiceAuthenticator", user + " token expiration=" + new Date(expiration));
 
             String newPassword = authState.jsonSerializeString();
             if (!Objects.equals(password, newPassword)) {
@@ -150,12 +145,12 @@ public class ServiceAuthenticator extends Authenticator {
         void onPasswordChanged(Context context, String newPassword);
     }
 
-    private static void OAuthRefresh(Context context, String id, AuthState authState, boolean expire, long keep_alive)
+    /*private static void OAuthRefresh(Context context, String id, AuthState authState, boolean expire, long keep_alive)
             throws MessagingException {
         try {
             Long expiration = authState.getAccessTokenExpirationTime();
             if (expiration != null && expiration - keep_alive < new Date().getTime()) {
-                EntityLog.log(context, "OAuth force refresh" +
+                Log.e("ServiceAuthenticator", "OAuth force refresh" +
                         " expiration=" + new Date(expiration) +
                         " keep_alive=" + (keep_alive / 60 / 1000) + "m");
                 authState.setNeedsTokenRefresh(true);
@@ -196,9 +191,9 @@ public class ServiceAuthenticator extends Authenticator {
         } catch (Exception ex) {
             throw new MessagingException("OAuth refresh id=" + id, ex);
         }
-    }
+    }*/
 
-    static String getAuthTokenType(String type) {
+    public static String getAuthTokenType(String type) {
         // https://developers.google.com/gmail/imap/xoauth2-protocol
         if (TYPE_GOOGLE.equals(type))
             return "oauth2:https://mail.google.com/";
